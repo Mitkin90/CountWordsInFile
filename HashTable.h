@@ -49,5 +49,6 @@ bool ht_next(hti* it);
 void PrintWords(ht* counts);
 void SetAllLettersToSmall( char line[], uint8_t size);
 int addDictionary(ht* counts, char *line, uint8_t size);
+int countWords(ht* counts, char line[] , uint8_t size);
 
 //#endif // _HASHTABLE_H

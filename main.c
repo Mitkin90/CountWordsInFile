@@ -25,6 +25,8 @@ struct ht {
 
 #define INITIAL_CAPACITY 16  // must not be zero
 
+static int countedWords = 0;
+
 ht* ht_create(void) {
     // Allocate space for hash table struct.
     ht* table = malloc(sizeof(ht));
@@ -209,12 +211,14 @@ void PrintWords(ht* counts)
 {
     hti it = ht_iterator(counts);
     while (ht_next(&it)) {
-        printf("%d  %s\n", (*(int*)it.value -1), it.key);
+        if( *(int*)it.value > 0)
+        printf("%d  %s\n", *(int*)it.value, it.key);
+        
         free(it.value);
     }
 
     // Show the number of unique words.
-    printf("%d\n", (int)ht_length(counts));
+    printf("%d  Total words\n", countedWords);
 
     ht_destroy(counts);
 }
@@ -234,7 +238,8 @@ void SetAllLettersToSmall( char line[], uint8_t size)
 int addDictionary(ht* counts, char line[] , uint8_t size)
 {
         char *word;
-        const char s[] = "- ,.!@#$%^&*()_<>/?'"":;=+1234567890";
+        const char s[] = " - ,.!@#$%^&*()_<>/?'"":;=+    1234567890\|\n";
+        
             //Checks for Line starting with "#" to ignore it
         if(line[0] == '#'){
             return 0;
@@ -258,12 +263,12 @@ int addDictionary(ht* counts, char line[] , uint8_t size)
 //                continue;
             }
 
-            // Word not found, allocate space for new int and set to 1.
+            // Word not found, allocate space for new int and set to 0.
             int* pcount = malloc(sizeof(int));
             if (pcount == NULL) {
                 exit_nomem();
             }
-            *pcount = 1;
+            *pcount = 0;
             if (ht_set(counts, word, pcount) == NULL) {
                 exit_nomem();
             }
@@ -272,14 +277,37 @@ int addDictionary(ht* counts, char line[] , uint8_t size)
     return 0;
 }
 
+int countWords(ht* counts, char line[] , uint8_t size)
+{
+        char *word;
+        const char s[] = "  - ,.!@#$%^&*()_<>/?'"":;=+1234567890";
+
+        //set all letters to small so that This and this counts as same word
+        SetAllLettersToSmall(line, size);
+     
+        word = strtok(line, s);
+        
+        while (word!= 0)
+        {
+            countedWords++;
+            // Look up word.
+            void* value = ht_get(counts, word);
+            if (value != NULL) {
+                // Already exists, increment int that value points to.
+                int* pcount = (int*)value;
+                (*pcount)++;
+                word = strtok(NULL, s);
+                continue;
+            }
+
+            word = strtok(NULL, s);
+        } \
+    return 0;
+}
+
 int main(void) {
 
-    char line[1000]={0};
-    
-    int i=0; 
-    int j=0;
-    
-
+    char line[255]={0};
     
     ht* counts = ht_create();
     if (counts == NULL) {
@@ -288,9 +316,9 @@ int main(void) {
     
     FILE *pToFIle = fopen("Input.txt", "r");
 
-    while( fgets(line, 1000, pToFIle) != NULL)
+    while( fgets(line, sizeof(line), pToFIle) != NULL)
     {
-       if( addDictionary(counts, line, sizeof(line) ) == 1 )
+       if( addDictionary(counts, line, (uint8_t)sizeof(line) ) == 1 )
        {
            fprintf(stderr, "Wrong Dictionary file");
            while(1);
@@ -298,8 +326,17 @@ int main(void) {
     }
     fclose(pToFIle);
     
+    pToFIle = fopen("Text.txt", "r");
+
+    while( fgets(line, sizeof(line), pToFIle) != NULL)
+    {
+       countWords(counts, line, (uint8_t)sizeof(line) );
+
+    }
+    fclose(pToFIle);
     
     
+
     PrintWords(counts);    
     
     return 0;
