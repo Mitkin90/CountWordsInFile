@@ -249,9 +249,6 @@ int addDictionary(ht* counts, char line[] , uint8_t size)
      
         word = strtok(line, s);
         
-        while (word!= 0)
-        {
-     
             // Look up word.
             void* value = ht_get(counts, word);
             if (value != NULL) {
@@ -272,8 +269,9 @@ int addDictionary(ht* counts, char line[] , uint8_t size)
             if (ht_set(counts, word, pcount) == NULL) {
                 exit_nomem();
             }
-            word = strtok(NULL, s);
-        } \
+        word = strtok(NULL, s);
+        if(word!=0) return 1; // checks if there are 2 or more words on one line
+
     return 0;
 }
 
