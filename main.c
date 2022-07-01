@@ -1,16 +1,4 @@
 
-
-// Simple hash table demonstration program
-
-/*
-$ gcc -O2 -Wall -o demo samples/demo.c ht.c
-$ echo 'foo bar the bar bar bar the' | ./demo
-See also:
-https://stackoverflow.com/questions/5134891/how-do-i-use-valgrind-to-find-memory-leaks
-*/
-
-//#include "HashTable.h"
-
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -235,12 +223,12 @@ int main(void) {
       //  fgets(line, 1000, pToFIle);
     while( fgets(line, 1000, pToFIle) != NULL)
     {
-         //set all letters to small so that This and this is count as same word
+         //set all letters to small so that This and this counts as same word
         for(i=0; i< 1000; i++){
             if(line[i]>='A' && line[i]<='Z')
             line[i]+=0x20;
         }
-        printf("%s", line);
+       // printf("%s", line);  /* printing for test */
      
         word = strtok(line, s);
         while (word!= 0)
@@ -273,7 +261,7 @@ int main(void) {
     // Print out words and frequencies, freeing values as we go.
     hti it = ht_iterator(counts);
     while (ht_next(&it)) {
-        printf("%s %d\n", it.key, *(int*)it.value);
+        printf("%d  %s\n", *(int*)it.value, it.key);
         free(it.value);
     }
 
