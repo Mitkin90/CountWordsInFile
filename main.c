@@ -238,14 +238,14 @@ void SetAllLettersToSmall( char line[], uint8_t size)
 int addDictionary(ht* counts, char line[] , uint8_t size)
 {
         char *word;
-        const char s[] = " - ,.!@#$%^&*()_<>/?'"":;=+    1234567890\|\n";
+        const char s[] = " - ,.!@#$%^&*()_<>/?'"":;=+    1234567890|\n"; //set a string with possible tokken(word) separations
         
             //Checks for Line starting with "#" to ignore it
         if(line[0] == '#'){
             return 0;
         }
         //set all letters to small so that This and this counts as same word
-        SetAllLettersToSmall(line, 1000);
+        SetAllLettersToSmall(line, size);
      
         word = strtok(line, s);
         
@@ -253,11 +253,6 @@ int addDictionary(ht* counts, char line[] , uint8_t size)
             void* value = ht_get(counts, word);
             if (value != NULL) {
                 return 1 ;
-                // Already exists, increment int that value points to.
-//                int* pcount = (int*)value;
-//                (*pcount)++;
-//                word = strtok(NULL, s);
-//                continue;
             }
 
             // Word not found, allocate space for new int and set to 0.
@@ -313,7 +308,7 @@ int main(void) {
     }
     
     FILE *pToFIle = fopen("Input.txt", "r");
-
+    // Puts each word form the dictionary file to a hast table
     while( fgets(line, sizeof(line), pToFIle) != NULL)
     {
        if( addDictionary(counts, line, (uint8_t)sizeof(line) ) == 1 )
@@ -325,7 +320,7 @@ int main(void) {
     fclose(pToFIle);
     
     pToFIle = fopen("Text.txt", "r");
-
+    // checks for every word in the dictionary how many times it occurs in a text file
     while( fgets(line, sizeof(line), pToFIle) != NULL)
     {
        countWords(counts, line, (uint8_t)sizeof(line) );
@@ -333,8 +328,6 @@ int main(void) {
     }
     fclose(pToFIle);
     
-    
-
     PrintWords(counts);    
     
     return 0;
