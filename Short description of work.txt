@@ -1,0 +1,16 @@
+This program uses the "Input.txt" file as a dictionary and then
+finds out how many times each word from the dictionary is mentioned in Text.txt.
+
+Programming data structure choice:
+The used data structure to create the dictionary is Hash Table, where
+each word is used as a key that is mapped to the value of its occurrences.
+
+Program limitations:
+Each line should be shorter than 256 symbols.
+The size of the Hash Table is limited to memory.
+The program should work fine with files containing different types of symbols. 
+
+Possible areas for improvement:
+1. The input files are hardcoded, a good improvement is adding an option to choose files.
+2. Main.c file is too long, some of the code can be moved to other C files.
+3. Although I have refactored the code there are still repeating lines and some magic numbers.
