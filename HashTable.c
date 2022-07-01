@@ -1,14 +1,11 @@
+// Simple hash table implemented in C.
 
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
+
 
 #include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include "HashTable.h"
 
 // Hash table entry (slot may be filled or empty).
 typedef struct {
@@ -197,110 +194,4 @@ bool ht_next(hti* it) {
         }
     }
     return false;
-}
-
-void exit_nomem(void) {
-    fprintf(stderr, "out of memory\n");
-    exit(1);
-}
-
-// Print out words and frequencies, freeing values as we go.
-void PrintWords(ht* counts)
-{
-    hti it = ht_iterator(counts);
-    while (ht_next(&it)) {
-        printf("%d  %s\n", (*(int*)it.value -1), it.key);
-        free(it.value);
-    }
-
-    // Show the number of unique words.
-    printf("%d\n", (int)ht_length(counts));
-
-    ht_destroy(counts);
-}
-
-//set all letters to small so that This and this counts as same word
-void SetAllLettersToSmall( char line[], uint8_t size)
-{
-    int i = 0;
-    
-    for(i=0; i< size; i++){
-        if(line[i]>='A' && line[i]<='Z')
-        line[i]+=0x20;
-    }
-        
-}
-
-int addDictionary(ht* counts, char line[] , uint8_t size)
-{
-        char *word;
-        const char s[] = "- ,.!@#$%^&*()_<>/?'"":;=+1234567890";
-            //Checks for Line starting with "#" to ignore it
-        if(line[0] == '#'){
-            return 0;
-        }
-        //set all letters to small so that This and this counts as same word
-        SetAllLettersToSmall(line, 1000);
-     
-        word = strtok(line, s);
-        
-        while (word!= 0)
-        {
-     
-            // Look up word.
-            void* value = ht_get(counts, word);
-            if (value != NULL) {
-                return 1 ;
-                // Already exists, increment int that value points to.
-//                int* pcount = (int*)value;
-//                (*pcount)++;
-//                word = strtok(NULL, s);
-//                continue;
-            }
-
-            // Word not found, allocate space for new int and set to 1.
-            int* pcount = malloc(sizeof(int));
-            if (pcount == NULL) {
-                exit_nomem();
-            }
-            *pcount = 1;
-            if (ht_set(counts, word, pcount) == NULL) {
-                exit_nomem();
-            }
-            word = strtok(NULL, s);
-        } \
-    return 0;
-}
-
-int main(void) {
-
-    char line[1000]={0};
-    
-    int i=0; 
-    int j=0;
-    
-
-    
-    ht* counts = ht_create();
-    if (counts == NULL) {
-        exit_nomem();
-    }
-    
-    FILE *pToFIle = fopen("Input.txt", "r");
-
-    while( fgets(line, 1000, pToFIle) != NULL)
-    {
-       if( addDictionary(counts, line, sizeof(line) ) == 1 )
-       {
-           fprintf(stderr, "Wrong Dictionary file");
-           while(1);
-       }
-    }
-    fclose(pToFIle);
-    
-    
-    
-    PrintWords(counts);    
-    
-    return 0;
 }
