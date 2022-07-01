@@ -46,4 +46,8 @@ hti ht_iterator(ht* table);
 // items, return false. Don't call ht_set during iteration.
 bool ht_next(hti* it);
 
+void PrintWords(ht* counts);
+void SetAllLettersToSmall( char line[], uint8_t size);
+int addDictionary(ht* counts, char *line, uint8_t size);
+
 //#endif // _HASHTABLE_H
